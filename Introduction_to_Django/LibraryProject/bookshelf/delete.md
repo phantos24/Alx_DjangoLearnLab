@@ -1,3 +1,4 @@
 from bookshelf.models import Book
-Book.Objects.get(title="Nineteen Eighty-Four").delete()
-book = Book.objects.all()
+book = Book.Objects.get(title="Nineteen Eighty-Four")
+book.delete()
+books = Book.objects.all()
