@@ -40,7 +40,7 @@ def is_librarian(user):
     return hasattr(user, 'userprofile') and user.userprofile.role == 'Librarian'
 
 @user_passes_test(is_librarian)
-def admin_view(request):
+def librarian_view(request):
     return render(request, 'relationship_app/librarian_view.html',
     {'message' : "Welcome to librarian View"})
 
@@ -48,6 +48,6 @@ def is_member(user):
     return hasattr(user, 'userprofile') and user.userprofile.role == 'Member'
 
 @user_passes_test(is_member)
-def admin_view(request):
+def member_view(request):
     return render(request, 'relationship_app/member_view.html',
     {'message' : "Welcome to member View"})
