@@ -11,6 +11,6 @@ class Bookadmin(admin.ModelAdmin):
 admin.site.register(Book, Bookadmin)
 
 class CustomUserAdmin (admin.ModelAdmin):
-    list_display = ('title', 'author', 'publication_year', 'date_of_birth', 'profile_photo')
+    list_display = ('date_of_birth', 'profile_photo')
 
 admin.site.register(CustomUser, CustomUserAdmin)
