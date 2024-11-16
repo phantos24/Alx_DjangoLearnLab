@@ -4,21 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}"> <!-- Optional CSS -->
 </head>
 <body>
     <header>
         <h1>Welcome, Admin!</h1>
     </header>
     <main>
-        <p>{{ message }}</p> <!-- Displays the message passed from the view -->
+        <p>{{ message }}</p>
 
         <h2>Admin Actions</h2>
-        <ul>
-            <li><a href="/manage-users/">Manage Users</a></li>
-            <li><a href="/site-settings/">Site Settings</a></li>
-            <li><a href="/reports/">View Reports</a></li>
-        </ul>
     </main>
     <footer>
         <p>Admin Panel - Powered by Django</p>
