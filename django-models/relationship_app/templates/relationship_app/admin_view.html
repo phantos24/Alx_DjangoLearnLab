@@ -1,10 +1,27 @@
-from django.contrib.auth.decorators import user_passes_test
-from django.shortcuts import render
-from django.http import HttpResponseForbidden
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}"> <!-- Optional CSS -->
+</head>
+<body>
+    <header>
+        <h1>Welcome, Admin!</h1>
+    </header>
+    <main>
+        <p>{{ message }}</p> <!-- Displays the message passed from the view -->
 
-def is_admin(user):
-    return hasattr(user, 'userprofile') and user.userprofile.role == 'Admin'
-
-@user_passes_test(is_admin, login_url='/forbidden/')
-def admin_view(request):
-    return render(request, 'admin_view.html', {'message': 'Welcome, Admin!'})
+        <h2>Admin Actions</h2>
+        <ul>
+            <li><a href="/manage-users/">Manage Users</a></li>
+            <li><a href="/site-settings/">Site Settings</a></li>
+            <li><a href="/reports/">View Reports</a></li>
+        </ul>
+    </main>
+    <footer>
+        <p>Admin Panel - Powered by Django</p>
+    </footer>
+</body>
+</html>

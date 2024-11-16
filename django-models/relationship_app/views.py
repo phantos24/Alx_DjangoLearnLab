@@ -9,7 +9,7 @@ from django.contrib.auth import login
 from django.urls import path
 from django.contrib.auth.decorators import user_passes_test
 from django.shortcuts import render
-from django.http import HttpResponseForbidden
+from django.http import HttpResponse
 # Create your views here.
 
 def list_books(request):
@@ -31,6 +31,6 @@ class SignUpView(CreateView):
 def is_admin(user):
     return hasattr(user, 'userprofile') and user.userprofile.role == 'Admin'
 
-@user_passes_test(is_admin, login_url='/forbidden/')
+@user_passes_test(is_admin)
 def admin_view(request):
-    return render(request, 'admin_view.html', {'message': 'Welcome, Admin!'})
+    return HttpResponse("Welcome to Admin Dashboard")
