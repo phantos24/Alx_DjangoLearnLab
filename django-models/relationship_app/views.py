@@ -10,6 +10,7 @@ from django.urls import path
 from django.contrib.auth.decorators import user_passes_test
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.contrib.auth.decorators import permission_required
 # Create your views here.
 
 def list_books(request):
@@ -51,3 +52,4 @@ def is_member(user):
 def member_view(request):
     return render(request, 'relationship_app/member_view.html',
     {'message' : "Welcome to member View"})
+
