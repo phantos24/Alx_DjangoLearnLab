@@ -27,7 +27,7 @@ class SignUpView(CreateView):
     template_name = 'relationship_app/signup.html'
 
 urlpatterns = [
-    login('view.register',LoginView.as_view(template_name='relationship_app/logout.html'), name='logout'),
+    login('view.register',LogoutView.as_view(template_name='relationship_app/logout.html'), name='logout'),
     path('login/', LoginView.as_view(template_name='relationship_app/login.html'), name='login'),
 ]
 
