@@ -7,6 +7,6 @@ class Book(models.Model):
     author = models.CharField(max_length = 100)
     publication_year = models.IntegerField(default=0000)
 
-class custom_fields(AbstractUser):
+class CustomUser(AbstractUser):
     date_of_birth = models.DateField(null=True, blank=True)
     profile_photo = models.ImageField()
