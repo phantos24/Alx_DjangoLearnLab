@@ -8,8 +8,8 @@ from django.views.generic import CreateView
 from django.contrib.auth import login
 from django.urls import path
 from django.contrib.auth.decorators import user_passes_test
-from django.shortcuts import render
-from django.http import HttpResponse
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponseForbidden
 from django.contrib.auth.decorators import permission_required
 # Create your views here.
 
@@ -53,3 +53,54 @@ def member_view(request):
     return render(request, 'relationship_app/member_view.html',
     {'message' : "Welcome to member View"})
 
+@permission_required('relationship_app.can_add_book', raise_exception=True)
+def add_book(request):
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        author = request.POST.get('author')
+        publication_date = request.POST.get('publication_date')
+        
+        if not title or not author:
+            return render(request, 'add_book.html', {'error': 'Title and Author are required.'})
+        
+        Book.objects.create(title=title, author=author, publication_date=publication_date)
+        return redirect('book_list')
+    
+    return render(request, 'add_book.html')
+
+@permission_required('relationship_app.can_change_book', raise_exception=True)
+def edit_book(request, book_id):
+    if not request.user.has_perm('bookshelf.can_change_book'):
+        return HttpResponseForbidden("You do not have permission to edit this book.")
+    
+    book = get_object_or_404(Book, id=book_id)
+
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        author = request.POST.get('author')
+        publication_date = request.POST.get('publication_date')
+
+        if not title or not author:
+            return render(request, 'edit_book.html', {'book': book, 'error': 'Title and Author are required.'})
+        
+        book.title = title
+        book.author = author
+        book.publication_date = publication_date
+        book.save()
+
+        return redirect('book_list')
+
+    return render(request, 'edit_book.html', {'book': book})
+
+@permission_required('relationship_app.can_delete_book', raise_exception=True)
+def delete_book(request, book_id):
+    if not request.user.has_perm('bookshelf.can_delete_book'):
+        return HttpResponseForbidden("You do not have permission to delete this book.")
+    
+    book = get_object_or_404(Book, id=book_id)
+
+    if request.method == 'POST':
+        book.delete()
+        return redirect('book_list')
+
+    return render(request, 'confirm_delete_book.html', {'book': book})
