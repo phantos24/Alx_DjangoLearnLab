@@ -12,7 +12,7 @@ class CustomUser(AbstractUser):
     date_of_birth = models.DateField(null=True, blank=True)
     profile_photo = models.ImageField()
 
-class CustomUserAdmin(BaseUserManager):
+class CustomUserManager(BaseUserManager):
      def create_user(self, username, email, password=None, date_of_birth=None, profile_photo=None, **extra_fields):
         if not email:
             raise ValueError("The Email field must be set")
