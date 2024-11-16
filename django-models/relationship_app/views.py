@@ -19,6 +19,6 @@ class LibraryDetailView(DetailView):
     template_name = 'relationship_app/library_detail.html'
 
 class SignUpView(CreateView):
-    form_class = UserCreationForm
+    form_class = UserCreationForm()
     success_url = reverse_lazy('login')
-    template_name = 'relationship_app/signup.html'
+    template_name = 'relationship_app/register.html'
