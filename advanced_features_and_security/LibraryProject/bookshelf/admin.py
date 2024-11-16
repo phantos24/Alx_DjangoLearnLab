@@ -9,3 +9,6 @@ class Bookadmin(admin.ModelAdmin):
     search_fields = ('title', 'author', 'publication_year')
 
 admin.site.register(Book, Bookadmin)
+
+class ModelAdmin(admin.ModelAdmin):
+    list_display = ('title', 'author', 'publication_year','date_of_birth','profile_photo')
