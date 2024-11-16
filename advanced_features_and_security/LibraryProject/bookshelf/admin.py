@@ -1,8 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Book, CustomUser, CustomUserManager
-
+from .models import Book, CustomUser, CustomUserAdmin
 class Bookadmin(admin.ModelAdmin):
     list_display = ('title', 'author', 'publication_year')
     list_filter = ('title', 'author', 'publication_year')
@@ -10,4 +9,4 @@ class Bookadmin(admin.ModelAdmin):
 
 admin.site.register(Book, Bookadmin)
 
-admin.site.register(CustomUser, CustomUserManager)
+admin.site.register(CustomUser, CustomUserAdmin)
