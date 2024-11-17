@@ -1,9 +1,11 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
-from django.contrib.auth.models import BaseUserManager
+from django.contrib.auth.models import AbstractUser, BaseUserManager, Permission
+
 
 # Create your models here.
 class Book(models.Model):
+    permission = ('can_view', 'can_create', 'can_edit', 'can_delete')
+
     title = models.CharField(max_length = 200)
     author = models.CharField(max_length = 100)
     publication_year = models.IntegerField(default=0000)
@@ -41,3 +43,4 @@ class CustomUserManager(BaseUserManager):
             raise ValueError("Superuser must have is_superuser=True.")
 
         return self.create_user(username, email, password, **extra_fields)
+     
