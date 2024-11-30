@@ -5,6 +5,7 @@ from .models import Book
 from django.urls import reverse_lazy
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 
 # Create your views here.
 class ListView(ListView):
@@ -23,6 +24,7 @@ class CreateView(PermissionRequiredMixin, CreateView):
     template_name = 'book_form.html'  
     success_url = reverse_lazy('book-list')
     permission_required = 'api.add_book'
+    permission_classes = [IsAuthenticated]
 
     def form_valid(self, form):
         response = super().form_valid(form)
@@ -38,6 +40,7 @@ class UpdateView(PermissionRequiredMixin, UpdateView):
     template_name = 'book_form.html'  
     success_url = reverse_lazy('book-list')
     permission_required = 'api.change_book'
+    permission_classes = [IsAuthenticated]
 
     def form_valid(self, form):
         response = super().form_valid(form)
