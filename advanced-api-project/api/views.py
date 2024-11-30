@@ -8,7 +8,7 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from django_filters import rest_framework
 from rest_framework import generics
-from rest_framework.filters import OrderingFilter, SearchFilter
+from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
 
 
@@ -19,9 +19,9 @@ class ListView(ListView, generics.ListAPIView):
     context_object_name = 'books'
 
     queryset = Book.objects.all()
-    filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
+    filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
     ordering_fields = ['title', 'publication_year']
-    search_fields = ['title', 'author__name']
+    search_fields = ['title', 'author']
     ordering = ['title']
 
     def get_queryset(self):
