@@ -4,6 +4,7 @@ from django.contrib import messages
 from .forms import CustomUserCreationForm,UserProfileForm, PostForm
 from django.views.generic import ListView,DeleteView,CreateView,UpdateView,DetailView
 from .models import Post
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
 # Create your views here.
