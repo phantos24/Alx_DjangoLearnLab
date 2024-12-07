@@ -58,18 +58,18 @@ def profile(request):
 
 class ListView(ListView):
     model = Post
-    template_name = 'blog/listview.html' # The HTML template to use
+    template_name = 'blog/listing.html' # The HTML template to use
     context_object_name = 'posts'  # The variable that holds the context data in the template
     paginate_by = 10  # Number of posts per page
 
 class DetailView(DetailView):
     model = Post
-    template_name = 'blog/detailview.html' # The HTML template to use
+    template_name = 'blog/viewing.html' # The HTML template to use
     context_object_name = 'posts' 
 
 class CreateView(LoginRequiredMixin, CreateView):
     model = Post
-    template_name = 'blog/create&updateview.html' # The HTML template to use
+    template_name = 'blog/creating.html' # The HTML template to use
     form_calss = PostForm
 
     def form_vaild(self, form):
@@ -78,7 +78,7 @@ class CreateView(LoginRequiredMixin, CreateView):
 
 class UpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
-    template_name = 'blog/create&updateview.html' # The HTML template to use
+    template_name = 'blog/editing.html' # The HTML template to use
     form_calss = PostForm
 
     def test_func(self):
@@ -91,7 +91,7 @@ class UpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     
 class DeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Post
-    template_name = 'blog/Deleteview.html' # The HTML template to use
+    template_name = 'blog/Deleting.html' # The HTML template to use
     success_url = '/blog/'  # Redirect to the list of posts after deletion
     
     def test_func(self):
