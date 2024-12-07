@@ -1,0 +1,24 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ object.title }}</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+
+<body>
+    <h1>{{ object.title }}</h1>
+    <p>{{ object.content }}</p>
+    <p><strong>Author:</strong> {{ object.author }}</p>
+    <p><strong>Published:</strong> {{ object.created_at }}</p>
+    {% if object.author == user %}
+    <a href="{% url 'post_update' object.pk %}">Edit Post</a>
+    <a href="{% url 'post_delete' object.pk %}">Delete Post</a>
+    {% endif %}
+    <a href="{% url 'post_list' %}">Back to All Posts</a>
+</body>
+
+</html>
