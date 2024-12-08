@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import UserProfile, Post, Comment, Tag
-from taggit.forms import TagField
+from taggit.forms import TagWidget
 
 class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField(required=True)  # Add email field
@@ -20,7 +20,11 @@ class UserProfileForm(forms.ModelForm):
         super(UserProfileForm, self).__init__(*args, **kwargs)
 
 class PostForm(forms.ModelForm):
-    tags = TagField(required=False, help_text='Enter tags separated by spaces.')
+    tags = forms.CharField(
+        max_length=255,
+        required=False,
+        widget=TagWidget(attrs={'placeholder': 'Add tags...'}),  # Use TagWidget for tagging
+    )
     class Meta:
         model = Post
         fields = ['title', 'content', 'tags']
