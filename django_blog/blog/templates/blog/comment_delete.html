@@ -7,5 +7,5 @@
     {% csrf_token %}
     <button type="submit">Confirm</button>
 </form>
-<a href="{% url 'post-detail' post_id=object.post.id %}">Cancel</a>
+<a href="{% url 'post-detail' pk=object.post.id %}">Cancel</a>
 {% endblock %}

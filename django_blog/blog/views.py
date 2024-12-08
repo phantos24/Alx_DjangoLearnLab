@@ -69,6 +69,11 @@ class PostDetailView(DetailView):
     template_name = 'blog/post_detail.html' # The HTML template to use
     context_object_name = 'post' 
 
+    def get(self, request, pk):
+        post = get_object_or_404(Post, pk=pk)
+        comments = Comment.objects.filter(post=post)  # Fetch all comments related to this post
+        return render(request, 'blog/post_detail.html', {'post': post, 'comments': comments})
+
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
     template_name = 'blog/post_create.html' # The HTML template to use
@@ -148,11 +153,11 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.author = self.request.user
-        form.instance.post = get_object_or_404(Post, id=self.kwargs['post_id'])
+        form.instance.post = get_object_or_404(Post, id=self.kwargs['pk'])
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse('post-detail', kwargs={'post_id': self.kwargs['post_id']})
+        return reverse('post-detail', kwargs={'pk': self.kwargs['pk']})
 
 class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Comment
@@ -168,7 +173,7 @@ class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return self.request.user == comment.author
 
     def get_success_url(self):
-        return reverse_lazy('post_detail', kwargs={'post_id': self.object.post.id})
+        return reverse_lazy('post-detail', kwargs={'pk': self.object.post.id})
 
 class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Comment
@@ -179,4 +184,4 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return self.request.user == comment.author
 
     def get_success_url(self):
-        return reverse_lazy('post_detail', kwargs={'post_id': self.object.post.id})
+        return reverse_lazy('post-detail', kwargs={'pk': self.object.post.id})
