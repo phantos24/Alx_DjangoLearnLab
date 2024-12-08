@@ -7,6 +7,8 @@ from .models import Post, Comment
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse, reverse_lazy
+from django.db.models import Q
+
 
 # Create your views here.
 def login(request):
@@ -185,3 +187,13 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def get_success_url(self):
         return reverse_lazy('post-detail', kwargs={'pk': self.object.post.id})
+
+def search_posts(request):
+    query = request.GET.get('q', '')
+    posts = Post.objects.filter(
+        Q(title__icontains=query) |  # Case-insensitive search in title
+        Q(content__icontains=query) |  # Case-insensitive search in content
+        Q(tags__name__icontains=query)  # Case-insensitive search in tags)
+    ).distinct()
+
+    return render(request, 'blog/search_results.html', {'query': query, 'posts': posts})
