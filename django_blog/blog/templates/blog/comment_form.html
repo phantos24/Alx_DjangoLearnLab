@@ -1,11 +1,10 @@
-{% extends 'blog/base.html' %}
+{% extends "blog/base.html" %}
 
 {% block content %}
-<h2>Edit Comment</h2>
+<h3>Leave a Comment</h3>
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Save Changes</button>
+    <button type="submit" class="btn btn-success">Submit</button>
 </form>
-<a href="{% url 'post-detail' post_id=object.post.id %}">Cancel</a>
 {% endblock %}

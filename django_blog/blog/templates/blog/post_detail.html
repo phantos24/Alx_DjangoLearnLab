@@ -55,8 +55,8 @@
 
     <section>
         <h3>Leave a Comment</h3>
-        {% if form %}
-        <form method="post">
+        {% if user.is_authenticated %}
+        <form method="post" action="{% url 'comment-create' post.id %}">
             {% csrf_token %}
             {{ form.as_p }}
             <button type="submit" class="btn btn-success">Submit</button>
