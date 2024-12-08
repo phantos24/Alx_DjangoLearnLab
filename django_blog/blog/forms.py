@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import UserProfile, Post
+from .models import UserProfile, Post, Comment
 
 class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField(required=True)  # Add email field
@@ -40,3 +40,17 @@ class PostForm(forms.ModelForm):
         if commit:
             post.save()  # Save the post instance
         return post
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['content']
+
+    def clean_content(self):
+        content = self.cleaned_data.get('content')
+        if not content or content.strip() == "":
+            raise forms.ValidationError("Comment content cannot be empty.")
+        if len(content) < 3:
+            raise forms.ValidationError("Comment content must be at least 3 characters long.")
+        return content
+

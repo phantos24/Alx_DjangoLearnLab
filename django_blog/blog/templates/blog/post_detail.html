@@ -10,15 +10,61 @@
 </head>
 
 <body>
-    <h1>{{ object.title }}</h1>
-    <p>{{ object.content }}</p>
-    <p><strong>Author:</strong> {{ object.author }}</p>
-    <p><strong>Published:</strong> {{ object.created_at }}</p>
-    {% if object.author == user %}
-    <a href="{% url 'post-update' object.pk %}">Edit Post</a>
-    <a href="{% url 'post-delete' object.pk %}">Delete Post</a>
-    {% endif %}
-    <a href="{% url 'post-list' %}">Back to All Posts</a>
+    <header>
+        <h1>{{ object.title }}</h1>
+    </header>
+
+    <section>
+        <p>{{ object.content }}</p>
+        <p><strong>Author:</strong> {{ object.author }}</p>
+        <p><strong>Published:</strong> {{ object.created_at }}</p>
+        {% if object.author == user %}
+        <div>
+            <a href="{% url 'post-update' object.pk %}" class="btn btn-primary">Edit Post</a>
+            <a href="{% url 'post-delete' object.pk %}" class="btn btn-danger">Delete Post</a>
+        </div>
+        {% endif %}
+    </section>
+
+    <a href="{% url 'post-list' %}" class="btn btn-secondary">Back to All Posts</a>
+
+    <hr>
+
+    <section>
+        <h2>Comments</h2>
+        <ul>
+            {% for comment in comments %}
+            <li>
+                <p><strong>{{ comment.author }}</strong> <span>{{ comment.created_at }}</span></p>
+                <p>{{ comment.content }}</p>
+
+                {% if comment.author == user %}
+                <div>
+                    <a href="{% url 'comment-edit' comment.pk %}" class="btn btn-sm btn-primary">Edit Comment</a>
+                    <a href="{% url 'comment-delete' comment.pk %}" class="btn btn-sm btn-danger">Delete Comment</a>
+                </div>
+                {% endif %}
+            </li>
+            {% empty %}
+            <p>No comments yet. Be the first to comment!</p>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <hr>
+
+    <section>
+        <h3>Leave a Comment</h3>
+        {% if form %}
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-success">Submit</button>
+        </form>
+        {% else %}
+        <p>You must be logged in to leave a comment.</p>
+        {% endif %}
+    </section>
 </body>
 
 </html>
