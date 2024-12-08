@@ -28,8 +28,15 @@ class PostForm(forms.ModelForm):
             'content': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Write your post here'}),
         }
 
-    def clean_title(self):
-        title = self.cleaned_data.get('title')
-        if len(title) < 5:
-            raise forms.ValidationError("The title must be at least 5 characters long.")
-        return title
+    
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super(PostForm, self).__init__(*args, **kwargs)
+
+    def save(self, commit=True):
+        post = super(PostForm, self).save(commit=False)
+        if self.user is not None:
+            post.author = self.user  # Set the user as the author
+        if commit:
+            post.save()  # Save the post instance
+        return post

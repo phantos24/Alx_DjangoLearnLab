@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, get_user_model, login as auth_login
 from django.contrib import messages
 from .forms import CustomUserCreationForm,UserProfileForm, PostForm
@@ -6,6 +6,7 @@ from django.views.generic import ListView,DeleteView,CreateView,UpdateView,Detai
 from .models import Post
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.urls import reverse
 
 # Create your views here.
 def login(request):
@@ -71,16 +72,28 @@ class DetailView(DetailView):
 class CreateView(LoginRequiredMixin, CreateView):
     model = Post
     template_name = 'blog/post_create.html' # The HTML template to use
-    form_calss = PostForm
+    fields = ['title', 'content']
 
-    def form_vaild(self, form):
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = PostForm(user=self.request.user)  # Pass the user to the form
+        return context
+
+    def form_valid(self, form):
         form.instance.author = self.request.user
-        return super().form_vaild(form)
+        return super().form_valid(form)
+    
+    def get_success_url(self):
+        return reverse('post-detail', kwargs={'pk': self.object.pk})
 
 class UpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
     template_name = 'blog/post_edit.html' # The HTML template to use
+    fields = ['title', 'content']
     form_calss = PostForm
+
+    def get_object(self):
+        return get_object_or_404(Post, pk=self.kwargs['pk'])
 
     def test_func(self):
         # Check if the logged-in user is the author of the post
@@ -90,12 +103,19 @@ class UpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def get_queryset(self):
         return Post.objects.filter(author=self.request.user)
     
+    def get_success_url(self):
+        return reverse('post-detail', kwargs={'pk': self.object.pk})
+    
 class DeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Post
     template_name = 'blog/post_delete.html' # The HTML template to use
+    fields = ['title', 'content']
     success_url = '/blog/'  # Redirect to the list of posts after deletion
     
     def test_func(self):
         # Check if the logged-in user is the author of the post
         post = self.get_object()
         return self.request.user == post.author
+    
+def Blog(request):
+    return render(request, "blog/base.html")
