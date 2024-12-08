@@ -23,7 +23,7 @@ class PostForm(forms.ModelForm):
     tags = forms.CharField(
         max_length=255,
         required=False,
-        widget=TagWidget(attrs={'placeholder': 'Add tags...'}),  # Use TagWidget for tagging
+        widget=TagWidget(),  # Use TagWidget for tagging
     )
     class Meta:
         model = Post
