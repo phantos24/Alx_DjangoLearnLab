@@ -197,3 +197,12 @@ def search_posts(request):
     ).distinct()
 
     return render(request, 'blog/search_results.html', {'query': query, 'posts': posts})
+
+class PostByTagListView(ListView):
+    model = Post
+    template_name = 'blog/post_list.html'  # Adjust to your template name
+    context_object_name = 'posts'
+    
+    def get_queryset(self):
+        tag = self.kwargs.get('tag')
+        return Post.objects.filter(tags__name=tag)  # Filter posts by the tag
