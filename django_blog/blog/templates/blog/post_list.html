@@ -14,7 +14,7 @@
     <ul>
         {% for post in object_list %}
         <li>
-            <h2><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h2>
+            <h2><a href="{% url 'post-detail' pk=post.pk%}">{{ post.title }}</a></h2>
             <p>{{ post.content|slice:":100" }}...</p> <!-- Show only the first 100 characters -->
         </li>
         {% endfor %}
