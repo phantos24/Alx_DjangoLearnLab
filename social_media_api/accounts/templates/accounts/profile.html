@@ -1,0 +1,16 @@
+{% extends "accounts/base.html" %}
+
+{% block title %}Profile - {{ user.username }}{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<h2>{{ user.username }}'s Profile</h2>
+<img src="{{ user.profile_picture.url|default:'default_profile_picture.jpg' }}" alt="Profile Picture" />
+<p>Email: {{ user.email }}</p>
+<p>Bio: {{ user.bio|default:'No bio available' }}</p>
+<p>Followers: {{ user.followers.count|default:0 }}</p>
+<p>Following: {{ user.following.count|default:0 }}</p>
+{% else %}
+<p>Please log in to view your profile.</p>
+{% endif %}
+{% endblock %}
