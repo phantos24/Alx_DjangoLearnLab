@@ -9,11 +9,11 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['id', 'username', 'email', 'bio', 'profile_picture', 'followers']
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True)
+    token = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password', 'bio', 'profile_picture', 'first_name', 'last_name',]
+        fields = ['username', 'email', 'password', 'bio', 'profile_picture', 'first_name', 'last_name', 'token']
 
     def create(self, validated_data):
         user = get_user_model().objects.create_user(
@@ -25,16 +25,21 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             first_name = validated_data.get('first_name'), 
             last_name = validated_data.get('last_name')
         )
-        Token.objects.create(user=user)
+        token = Token.objects.get_or_create(user=user)
         return user
+    
+    def get_token(self, obj):
+        token = Token.objects.get(user=obj)
+        return token.key
     
 class UserLoginSerializer(serializers.ModelSerializer):
     username = serializers.CharField()
-    password = serializers.CharField(write_only=True)
+    password = serializers.CharField()
+    token = serializers.SerializerMethodField()
 
     class Meta:
         model = User 
-        fields = ['username', 'password']
+        fields = ['username', 'password', 'token']
         
     def validate(self, data):
         username = data.get('username')
@@ -43,5 +48,11 @@ class UserLoginSerializer(serializers.ModelSerializer):
             user = authenticate(username=username, password=password)
             if not user:
                 raise serializers.ValidationError("Invalid username or password")
+        else:
+            raise serializers.ValidationError("Both username and password are required")
         return data
+    
+    def get_token(self, obj):
+        token, _ = Token.objects.get_or_create(user=self.user)
+        return token.key
         
