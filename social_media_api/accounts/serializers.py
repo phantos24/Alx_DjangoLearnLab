@@ -1,9 +1,15 @@
 from rest_framework import serializers
 from .models import User
+from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'bio', 'profile_picture', 'followers']
+
 class UserRegistrationSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True, required=True, style={'input_type': 'password'})
+    password = serializers.CharField(write_only=True)
 
     class Meta:
         model = User
@@ -19,11 +25,12 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             first_name = validated_data.get('first_name'), 
             last_name = validated_data.get('last_name')
         )
+        Token.objects.create(user=user)
         return user
     
 class UserLoginSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(max_length=150)
-    password = serializers.CharField(write_only=True, required=True, style={'input_type': 'password'})
+    username = serializers.CharField()
+    password = serializers.CharField(write_only=True)
 
     class Meta:
         model = User 
@@ -37,23 +44,4 @@ class UserLoginSerializer(serializers.ModelSerializer):
             if not user:
                 raise serializers.ValidationError("Invalid username or password")
         return data
-    
-class TokenSerializer(serializers.Serializer):
-    username = serializers.CharField(required=True)
-    password = serializers.CharField(write_only=True, required=True, style={'input_type': 'password'})
-
-    def validate(self, data):
-        username = data.get('username')
-        password = data.get('password')
-
-        user = authenticate(username=username, password=password)
-        if user is None:
-            raise serializers.ValidationError("Invalid username or password.")
-
-        data['user'] = user
-        return data
-    
-class UserProfileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['first_name', 'email', 'bio', 'profile_picture']
+        
