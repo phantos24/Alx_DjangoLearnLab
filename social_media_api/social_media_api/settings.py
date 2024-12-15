@@ -142,6 +142,7 @@ REST_FRAMEWORK = {
         'rest_framework.parsers.FormParser',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication', 
         'rest_framework.authentication.TokenAuthentication',
     ],
 }
