@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from .serializers import PostSerializer, CommentSerializer
 from .models import Post, Comment, Like
 from notifications.models import Notification
-from rest_framework import viewsets, permissions, filters
+from rest_framework import viewsets, permissions, filters, generics
 from rest_framework.pagination import PageNumberPagination 
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -39,15 +39,14 @@ class FeedView(APIView):
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
     
-class LikePostView(APIView):
+class LikePostView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, pk):
-        post = get_object_or_404(Post, pk=pk)
-        like, created = Like.objects.get_or_create(post=post, user=request.user)
+        post = generics.get_object_or_404(Post, pk=pk)
+        like, created = Like.objects.get_or_create(user=request.user, post=post)
         
         if created:
-            # Create a notification
             Notification.objects.create(
                 recipient=post.author,
                 actor=request.user,
@@ -57,12 +56,12 @@ class LikePostView(APIView):
             return Response({'message': 'Post liked.'}, status=201)
         return Response({'error': 'You already liked this post.'}, status=400)
 
-class UnlikePostView(APIView):
+class UnlikePostView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, pk):
-        post = get_object_or_404(Post, pk=pk)
-        like = Like.objects.filter(post=post, user=request.user).first()
+        post = generics.get_object_or_404(Post, pk=pk)
+        like = Like.objects.filter(user=request.user, post=post).first()
         
         if like:
             like.delete()
