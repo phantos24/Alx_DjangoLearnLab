@@ -1,6 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from .serializers import PostSerializer, CommentSerializer
-from .models import Post, Comment
+from .models import Post, Comment, Like
+from notifications.models import Notification
 from rest_framework import viewsets, permissions, filters
 from rest_framework.pagination import PageNumberPagination 
 from rest_framework.response import Response
@@ -37,3 +38,33 @@ class FeedView(APIView):
         posts = Post.objects.filter(author__in=following_users).order_by('-created_at')
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
+    
+class LikePostView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+        post = get_object_or_404(Post, pk=pk)
+        like, created = Like.objects.get_or_create(post=post, user=request.user)
+        
+        if created:
+            # Create a notification
+            Notification.objects.create(
+                recipient=post.author,
+                actor=request.user,
+                verb='liked your post',
+                target=post
+            )
+            return Response({'message': 'Post liked.'}, status=201)
+        return Response({'error': 'You already liked this post.'}, status=400)
+
+class UnlikePostView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+        post = get_object_or_404(Post, pk=pk)
+        like = Like.objects.filter(post=post, user=request.user).first()
+        
+        if like:
+            like.delete()
+            return Response({'message': 'Post unliked.'}, status=200)
+        return Response({'error': 'You have not liked this post.'}, status=400)
